@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import type { Product } from '@/types/commerce';
+import { Plus } from 'lucide-react';
 
 export const campaignAssets = {
   hero: '/campaigns/culture-hero-concept.webp',
@@ -122,7 +123,7 @@ export function CollectionPanels({
             <div className="collection-panel-top">
               <span className="eyebrow">SMOKE & STEREO</span>
               <span className="panel-cross" aria-hidden="true">
-                +
+                <Plus className="ui-icon" size="1em" strokeWidth={1} />
               </span>
             </div>
             <div className="collection-panel-copy">

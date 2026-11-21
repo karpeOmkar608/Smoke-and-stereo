@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, Asterisk } from 'lucide-react';
 import { useStore } from '@/components/store-provider';
 import { money } from '@/types/commerce';
 export default function Cart() {
@@ -17,7 +17,9 @@ export default function Cart() {
       <div className="page-content">
         {!lines.length ? (
           <div className="empty-state">
-            <span className="large-star">✳</span>
+            <span className="large-star" aria-hidden="true">
+              <Asterisk className="ui-icon" size="1em" strokeWidth={1} />
+            </span>
             <h2>MAKE SOME ROOM FOR CULTURE.</h2>
             <p>Your bag is waiting for its first drop.</p>
             <Link href="/shop" className="button acid">

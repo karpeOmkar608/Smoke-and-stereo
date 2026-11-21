@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { SiteContent } from '@/lib/content';
 import { Wordmark } from './navigation';
+import { ArrowUp } from 'lucide-react';
 
 export function Footer({ content }: { content: SiteContent }) {
   return (
@@ -70,7 +71,16 @@ export function Footer({ content }: { content: SiteContent }) {
         <div>
           <Link href="/info/privacy">Privacy</Link>
           <Link href="/info/terms">Terms</Link>
-          <a href="#main">BACK TO TOP ↑</a>
+          <a className="back-to-top" href="#main">
+            BACK TO TOP{' '}
+            <ArrowUp
+              className="ui-icon"
+              size={14}
+              strokeWidth={1.5}
+              aria-hidden="true"
+              focusable="false"
+            />
+          </a>
         </div>
       </div>
     </footer>

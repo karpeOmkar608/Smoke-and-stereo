@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { Heart, Minus, Plus } from 'lucide-react';
+import { Heart, Minus, Plus, Asterisk } from 'lucide-react';
 import { useEffect, useMemo, useState, useId } from 'react';
 import { motion } from 'framer-motion';
 import { type Product, money } from '@/types/commerce';
@@ -369,7 +369,9 @@ export function Shop({
         </motion.div>
       ) : (
         <div className="empty-state">
-          <span className="large-star">✳</span>
+          <span className="large-star" aria-hidden="true">
+            <Asterisk className="ui-icon" size="1em" strokeWidth={1} />
+          </span>
           <h2>{products.length ? 'NO SIGNAL FOUND.' : 'THE NEXT DROP IS COMING.'}</h2>
           <p>
             {products.length

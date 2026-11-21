@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
 
 export function CinematicHero({
   image,
@@ -54,7 +55,14 @@ export function CinematicHero({
           <span className="eyebrow">NOT RAP MERCH. A WAY OF LIFE.</span>
           <p>{copy}</p>
           <Link className="button hero-cta" href="/new-drops">
-            EXPLORE THE DROP <span aria-hidden="true">↗</span>
+            EXPLORE THE DROP{' '}
+            <ArrowUpRight
+              className="ui-icon"
+              size={21}
+              strokeWidth={1.5}
+              aria-hidden="true"
+              focusable="false"
+            />
           </Link>
         </div>
         <div className="hero-side-note">
@@ -69,7 +77,14 @@ export function CinematicHero({
         </div>
       </div>
       <a className="hero-scroll" href="#manifesto">
-        SCROLL TO ENTER <span aria-hidden="true">↓</span>
+        SCROLL TO ENTER{' '}
+        <ArrowDown
+          className="ui-icon"
+          size={20}
+          strokeWidth={1.5}
+          aria-hidden="true"
+          focusable="false"
+        />
       </a>
     </section>
   );

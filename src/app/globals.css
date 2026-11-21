@@ -455,10 +455,9 @@ textarea::placeholder {
   background: var(--paper);
   color: var(--black);
 }
-.hero-cta span {
-  font-size: 21px;
-  font-weight: 400;
-  line-height: 1;
+.hero-cta .ui-icon {
+  width: 21px;
+  height: 21px;
 }
 .hero-side-note {
   display: flex;
@@ -488,9 +487,9 @@ textarea::placeholder {
   display: flex;
   justify-content: space-between;
 }
-.hero-scroll span {
-  font-size: 20px;
-  line-height: 1;
+.hero-scroll .ui-icon {
+  width: 20px;
+  height: 20px;
 }
 .manifesto {
   background: var(--paper);
@@ -996,8 +995,21 @@ textarea::placeholder {
   margin: 20px auto;
 }
 .large-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 70px;
   line-height: 1.4;
+}
+.ui-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.back-to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 .product-detail {
   display: grid;

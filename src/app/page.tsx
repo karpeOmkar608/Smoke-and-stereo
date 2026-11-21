@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
 import { Newsletter } from '@/components/newsletter';
 import { catalogState } from '@/lib/catalog';
 import { getContent } from '@/lib/content';
@@ -29,7 +30,7 @@ export default async function Home() {
         <div className="manifesto-meta">
           <span className="eyebrow">THE SMOKE & STEREO MANIFESTO</span>
           <span className="editorial-cross" aria-hidden="true">
-            +
+            <Plus className="ui-icon" size="1em" strokeWidth={1} />
           </span>
         </div>
         <h2>

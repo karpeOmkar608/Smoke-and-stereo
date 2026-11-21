@@ -12,7 +12,18 @@ export function Wordmark() {
     <span className="wordmark">
       SMOKE<span>&</span>STEREO
       <span className="wordmark-symbol" aria-hidden="true">
-        ®
+        <svg
+          width="10"
+          height="10"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          focusable="false"
+        >
+          <circle cx="12" cy="12" r="9.5" />
+          <path d="M9 17V7h4a3 3 0 0 1 0 6H9m4 0 3 4" />
+        </svg>
       </span>
     </span>
   );

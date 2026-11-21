@@ -48,10 +48,35 @@ describe('isolated demo catalogue', () => {
     ).toBe(true);
     expect(db.serviceClient).not.toHaveBeenCalled();
   });
-  it('disables demo mode for production Vercel deployments', () => {
+  it('supports explicitly enabled demos on production Vercel deployments', async () => {
     vi.stubEnv('VERCEL_ENV', 'production');
-    expect(isDemoMode()).toBe(false);
+    vi.stubEnv('NODE_ENV', 'production');
+    expect(isDemoMode()).toBe(true);
+    expect(await getCatalog()).toHaveLength(8);
+    expect(db.serviceClient).not.toHaveBeenCalled();
   });
+  it.each(['preview', 'production'])(
+    'keeps hosted %s demos isolated from real orders and suppliers',
+    async (environment) => {
+      vi.stubEnv('VERCEL_ENV', environment);
+      vi.stubEnv('NODE_ENV', 'production');
+      const fetcher = vi.fn();
+      vi.stubGlobal('fetch', fetcher);
+      expect((await demoCheckout(request())).status).toBe(200);
+      expect((await realCheckout(request())).status).toBe(403);
+      await expect(provider('/orders', { method: 'POST' })).rejects.toThrow('blocked in demo mode');
+      expect(fetcher).not.toHaveBeenCalled();
+      expect(db.serviceClient).not.toHaveBeenCalled();
+    },
+  );
+  it.each(['', 'false', undefined])(
+    'does not enable a hosted demo unless the flag is true (%s)',
+    (value) => {
+      vi.stubEnv('VERCEL_ENV', 'production');
+      vi.stubEnv('DEMO_CATALOG_ENABLED', value);
+      expect(isDemoMode()).toBe(false);
+    },
+  );
   it('blocks supplier calls in demo mode', async () => {
     const fetcher = vi.fn();
     vi.stubGlobal('fetch', fetcher);
