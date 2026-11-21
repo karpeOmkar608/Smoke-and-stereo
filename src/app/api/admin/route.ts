@@ -3,6 +3,7 @@ import { revalidateTag, revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { requireAdmin, serviceClient } from '@/lib/supabase/server';
 import { sameOrigin, apiError } from '@/lib/http';
+import { storiesSchema } from '@/lib/editorial';
 const safeUrl = z.union([
   z.literal(''),
   z.url().refine((s) => s.startsWith('https://'), 'Use an HTTPS URL'),
@@ -21,6 +22,26 @@ const contentSchema = z.object({
   returnsPolicy: z.string().max(20000),
   privacyPolicy: z.string().max(20000),
   termsPolicy: z.string().max(20000),
+  editorialStories: z
+    .string()
+    .max(100000)
+    .refine((value) => {
+      try {
+        return storiesSchema.safeParse(JSON.parse(value)).success;
+      } catch {
+        return false;
+      }
+    }, 'Invalid editorial stories')
+    .optional()
+    .default('[]'),
+  upcomingDropTitle: z.string().max(180).optional().default(''),
+  upcomingDropDate: z
+    .string()
+    .refine((value) => !value || !Number.isNaN(Date.parse(value)), 'Invalid release date')
+    .optional()
+    .default(''),
+  upcomingDropImage: safeUrl.optional().default(''),
+  upcomingDropCopy: z.string().max(2000).optional().default(''),
 });
 const actionSchema = z.discriminatedUnion('action', [
   z.object({ action: z.literal('content'), value: contentSchema }),

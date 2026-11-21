@@ -13,6 +13,7 @@ vi.mock('next/link', () => ({
     </a>
   ),
 }));
+vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
 vi.mock('framer-motion', () => ({
   motion: {
     div: ({ children, initial, animate, ...props }: any) => <div {...props}>{children}</div>,

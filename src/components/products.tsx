@@ -1,11 +1,13 @@
 'use client';
 import Link from 'next/link';
 import { Heart, Minus, Plus } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useId } from 'react';
 import { motion } from 'framer-motion';
 import { type Product, money } from '@/types/commerce';
 import { useStore } from './store-provider';
 import { Modal } from './modal';
+import { ProductGallery } from './product-gallery';
+import { useRouter } from 'next/navigation';
 export function ProductCard({ product }: { product: Product }) {
   const [quick, setQuick] = useState(false);
   const { wishlist, toggleWish } = useStore();
@@ -22,6 +24,9 @@ export function ProductCard({ product }: { product: Product }) {
             <img className="secondary-photo" src={product.images[1]} alt="" loading="lazy" />
           )}
         </Link>
+        {!product.variants.some((variant) => variant.available) && (
+          <span className="product-availability">UNAVAILABLE</span>
+        )}
         <button
           className="wish-button"
           onClick={() => toggleWish(product.sku)}
@@ -55,9 +60,9 @@ export function ProductDetail({
   compact?: boolean;
 }) {
   const [selected, setSelected] = useState('');
+  const router = useRouter();
   const [qty, setQty] = useState(1);
-  const [image, setImage] = useState(0);
-  const [zoom, setZoom] = useState(false);
+  const sizeGuideId = useId();
   const { add, notify, wishlist, toggleWish } = useStore();
   const variant = product.variants.find((v) => v.sku === selected);
   useEffect(() => {
@@ -70,7 +75,7 @@ export function ProductDetail({
     } catch {}
   }, [product.sku]);
   function addItem() {
-    if (!variant) {
+    if (!variant?.available) {
       notify('Choose an available size first.');
       return false;
     }
@@ -86,39 +91,25 @@ export function ProductDetail({
   }
   return (
     <div className={`product-detail ${compact ? 'compact' : ''}`}>
-      <div>
-        <button
-          className={`gallery-main ${zoom ? 'zoomed' : ''}`}
-          onClick={() => setZoom(!zoom)}
-          aria-label="Toggle image zoom"
-        >
-          {product.images[image] ? (
-            <img src={product.images[image]} alt={product.name} />
-          ) : (
-            <span>Image unavailable</span>
-          )}
-        </button>
-        <div className="thumbnails">
-          {product.images.map((url, i) => (
-            <button
-              key={url}
-              onClick={() => setImage(i)}
-              aria-label={`Image ${i + 1}`}
-              aria-pressed={image === i}
-            >
-              <img src={url} alt="" />
-            </button>
-          ))}
-        </div>
-      </div>
-      <div>
+      <ProductGallery images={product.images} name={product.name} />
+      <div className="product-information">
         <span className="eyebrow muted">{product.category || 'SMOKE & STEREO'}</span>
         <h1>{product.name}</h1>
         <p className="detail-price">
           {money(variant?.price ?? Math.min(...product.variants.map((v) => v.price)))}
         </p>
-        <p className="muted">{product.description}</p>
-        <div className="selection-label">SELECT YOUR SIZE / VARIANT</div>
+        <p className="product-description">{product.description}</p>
+        <div className="selection-label">
+          <span>SELECT YOUR SIZE / VARIANT</span>
+          {product.sizeGuide && (
+            <a
+              href={`#${sizeGuideId}`}
+              onClick={() => document.getElementById(sizeGuideId)?.setAttribute('open', '')}
+            >
+              SIZE GUIDE
+            </a>
+          )}
+        </div>
         <div className="sizes">
           {product.variants.map((v) => (
             <button
@@ -146,15 +137,24 @@ export function ProductDetail({
             <Plus size={16} />
           </button>
         </div>
-        <button className="button acid full" disabled={!variant?.available} onClick={addItem}>
-          ADD TO BAG
-        </button>
+        <p className="stock-note">
+          {variant
+            ? variant.available
+              ? 'AVAILABLE IN YOUR SELECTED VARIANT'
+              : 'THIS VARIANT IS UNAVAILABLE'
+            : 'CHOOSE AN AVAILABLE SIZE TO CONTINUE'}
+        </p>
+        <div className="purchase-bar">
+          <button className="button light full" disabled={!variant?.available} onClick={addItem}>
+            ADD TO BAG
+          </button>
+        </div>
         <div className="detail-actions">
           <button
             className="text-link"
             disabled={!variant?.available}
             onClick={() => {
-              if (addItem()) window.location.assign('/checkout');
+              if (addItem()) router.push('/checkout');
             }}
           >
             BUY NOW
@@ -171,7 +171,7 @@ export function ProductDetail({
         ]
           .filter(([, v]) => v)
           .map(([label, value]) => (
-            <details key={label}>
+            <details key={label} id={label === 'SIZE GUIDE' ? sizeGuideId : undefined}>
               <summary>{label}</summary>
               <p>{value}</p>
             </details>

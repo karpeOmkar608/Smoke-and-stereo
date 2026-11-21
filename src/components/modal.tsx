@@ -5,10 +5,14 @@ export function Modal({
   children,
   label,
   onClose,
+  className = '',
+  closeLabel = 'Close quick view',
 }: {
   children: ReactNode;
   label: string;
   onClose: () => void;
+  className?: string;
+  closeLabel?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const close = useRef(onClose);
@@ -48,7 +52,7 @@ export function Modal({
     };
   }, []);
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div className={`modal-backdrop ${className}`} onClick={onClose}>
       <div
         ref={ref}
         className="modal"
@@ -57,7 +61,7 @@ export function Modal({
         aria-label={label}
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="close-button" onClick={onClose} aria-label="Close quick view">
+        <button className="close-button" onClick={onClose} aria-label={closeLabel}>
           <X />
         </button>
         {children}

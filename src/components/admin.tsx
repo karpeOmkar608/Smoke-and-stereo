@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { money } from '@/types/commerce';
 import type { SiteContent } from '@/lib/content';
+import { parseStories } from '@/lib/editorial';
+import { EditorialEditor } from './editorial-editor';
 type AdminOrder = {
   id: string;
   order_number: string;
@@ -35,6 +37,7 @@ export function Admin({
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [date, setDate] = useState('');
+  const [stories, setStories] = useState(() => parseStories(content.editorialStories));
   async function act(input: unknown) {
     setBusy(true);
     setMessage('');
@@ -333,29 +336,40 @@ export function Admin({
             });
           }}
         >
-          {Object.entries(content).map(([key, value]) => (
-            <label
-              key={key}
-              className={
-                [
-                  'about',
-                  'shippingPolicy',
-                  'returnsPolicy',
-                  'privacyPolicy',
-                  'termsPolicy',
-                ].includes(key)
-                  ? 'span-two'
-                  : ''
-              }
-            >
-              {key.replace(/([A-Z])/g, ' $1').toUpperCase()}
-              {value.length > 150 || key.endsWith('Policy') || key === 'about' ? (
-                <textarea name={key} defaultValue={value} />
-              ) : (
-                <input name={key} defaultValue={value} />
-              )}
-            </label>
-          ))}
+          {Object.entries(content)
+            .filter(([key]) => key !== 'editorialStories')
+            .map(([key, value]) => (
+              <label
+                key={key}
+                className={
+                  [
+                    'about',
+                    'shippingPolicy',
+                    'returnsPolicy',
+                    'privacyPolicy',
+                    'termsPolicy',
+                  ].includes(key)
+                    ? 'span-two'
+                    : ''
+                }
+              >
+                {key.replace(/([A-Z])/g, ' $1').toUpperCase()}
+                {value.length > 150 ||
+                key.endsWith('Policy') ||
+                key === 'about' ||
+                key === 'upcomingDropCopy' ? (
+                  <textarea name={key} defaultValue={value} />
+                ) : (
+                  <input name={key} defaultValue={value} />
+                )}
+              </label>
+            ))}
+          <p className="small muted span-two">
+            Upcoming release fields are optional. Enter a confirmed date with its timezone (for
+            example, 2026-12-01T18:00:00+05:30) to display a countdown. Leave the date blank until
+            confirmed.
+          </p>
+          <EditorialEditor stories={stories} onChange={setStories} />
           <button className="button acid" disabled={busy}>
             SAVE CONTENT
           </button>

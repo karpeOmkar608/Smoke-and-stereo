@@ -14,6 +14,11 @@ export type SiteContent = {
   returnsPolicy: string;
   privacyPolicy: string;
   termsPolicy: string;
+  editorialStories: string;
+  upcomingDropTitle: string;
+  upcomingDropDate: string;
+  upcomingDropImage: string;
+  upcomingDropCopy: string;
 };
 export const defaults: SiteContent = {
   announcement: 'INDEPENDENT CULTURE. UNCOMPROMISED EXPRESSION.',
@@ -33,6 +38,11 @@ export const defaults: SiteContent = {
   privacyPolicy:
     'Our privacy policy will be published before customer registrations and orders open.',
   termsPolicy: 'Our terms of sale will be published before orders open.',
+  editorialStories: '[]',
+  upcomingDropTitle: '',
+  upcomingDropDate: '',
+  upcomingDropImage: '',
+  upcomingDropCopy: '',
 };
 export async function getContent(): Promise<SiteContent> {
   if (!configured()) return defaults;

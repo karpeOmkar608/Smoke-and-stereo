@@ -1,94 +1,131 @@
 'use client';
 import Link from 'next/link';
-import { Menu, Search, UserRound, ShoppingBag, X } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, Search, UserRound, ShoppingBag } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useStore } from './store-provider';
+import { Modal } from './modal';
+import { CartDrawer } from './cart-drawer';
+
 export function Wordmark() {
   return (
     <span className="wordmark">
-      SMOKE<span className="amp">&</span>STEREO<span className="brand-star">✳</span>
+      SMOKE<span>&</span>STEREO
+      <span className="wordmark-symbol" aria-hidden="true">
+        ®
+      </span>
     </span>
   );
 }
 export function Navigation({ announcement }: { announcement: string }) {
   const [open, setOpen] = useState(false);
+  const [bag, setBag] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const path = usePathname();
   const { lines } = useStore();
   const links = [
-    ['Home', '/'],
-    ['Shop', '/shop'],
-    ['New drops', '/new-drops'],
-    ['Collections', '/collections'],
-    ['The culture', '/about'],
+    ['SHOP', '/shop'],
+    ['NEW DROPS', '/new-drops'],
+    ['COLLECTIONS', '/collections'],
+    ['CULTURE', '/culture'],
+    ['ABOUT', '/about'],
   ];
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
   return (
     <>
-      <div className="announcement">
-        <span>{announcement}</span>
-        <span className="announcement-right">FROM THE STREETS. FOR THE CULTURE.</span>
-      </div>
-      <header className="nav">
-        <Link href="/" aria-label="Smoke and Stereo home">
-          <Wordmark />
-        </Link>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {links.map(([name, url]) => (
-            <Link
-              key={name}
-              className={path === url ? 'active' : ''}
-              aria-current={path === url ? 'page' : undefined}
-              href={url}
-            >
-              {name}
-            </Link>
-          ))}
-        </nav>
-        <div className="nav-tools">
-          <Link href="/shop?search=1" aria-label="Search products">
-            <Search size={20} />
-          </Link>
-          <Link href="/account" aria-label="Your account">
-            <UserRound size={20} />
-          </Link>
-          <Link
-            className="bag-link"
-            href="/cart"
-            aria-label={`Bag, ${lines.reduce((n, l) => n + l.quantity, 0)} items`}
-          >
-            <ShoppingBag size={20} />
-            <span>{lines.reduce((n, l) => n + l.quantity, 0)}</span>
-          </Link>
-          <button
-            className="mobile-menu"
-            onClick={() => setOpen(!open)}
-            aria-label="Toggle navigation"
-            aria-expanded={open}
-          >
-            {open ? <X /> : <Menu />}
-          </button>
+      <div
+        className={`nav-shell ${path === '/' ? 'over-hero' : ''} ${scrolled ? 'is-scrolled' : ''}`}
+      >
+        <div className="announcement">
+          <span>{announcement}</span>
+          <span className="announcement-right">INDEPENDENT. ALWAYS.</span>
         </div>
-      </header>
-      {open && (
-        <nav className="mobile-nav" aria-label="Mobile navigation">
-          {links.map(([name, url]) => (
-            <Link
-              onClick={() => setOpen(false)}
-              key={name}
-              href={url}
-              aria-current={path === url ? 'page' : undefined}
-            >
-              {name}
+        <header className="nav">
+          <Link href="/" aria-label="Smoke and Stereo home">
+            <Wordmark />
+          </Link>
+          <nav className="desktop-nav" aria-label="Main navigation">
+            {links.map(([name, url]) => (
+              <Link
+                key={url}
+                href={url}
+                className={path === url ? 'active' : ''}
+                aria-current={path === url ? 'page' : undefined}
+              >
+                {name}
+              </Link>
+            ))}
+          </nav>
+          <div className="nav-tools">
+            <Link href="/shop?search=1" aria-label="Search products">
+              <Search size={19} />
             </Link>
-          ))}
-          <Link onClick={() => setOpen(false)} href="/account">
-            Your account
-          </Link>
-          <Link onClick={() => setOpen(false)} href="/wishlist">
-            Wishlist
-          </Link>
-        </nav>
+            <Link className="account-link" href="/account" aria-label="Your account">
+              <UserRound size={19} />
+            </Link>
+            <button
+              className="bag-link"
+              onClick={() => setBag(true)}
+              aria-label={`Open bag, ${lines.reduce((sum, line) => sum + line.quantity, 0)} items`}
+            >
+              <ShoppingBag size={19} />
+              <span>({lines.reduce((sum, line) => sum + line.quantity, 0)})</span>
+            </button>
+            <button
+              className="mobile-menu"
+              onClick={() => setOpen(true)}
+              aria-label="Open navigation"
+              aria-expanded={open}
+            >
+              <Menu size={23} />
+            </button>
+          </div>
+        </header>
+      </div>
+      {open && (
+        <Modal
+          label="Main menu"
+          className="menu-overlay"
+          closeLabel="Close navigation"
+          onClose={() => setOpen(false)}
+        >
+          <span className="eyebrow muted">TUNE INTO SOMETHING DIFFERENT.</span>
+          <nav aria-label="Mobile navigation">
+            {links.map(([name, url]) => (
+              <Link
+                key={url}
+                href={url}
+                onClick={() => setOpen(false)}
+                aria-current={path === url ? 'page' : undefined}
+              >
+                {name}
+              </Link>
+            ))}
+          </nav>
+          <div className="menu-secondary">
+            <Link href="/account" onClick={() => setOpen(false)}>
+              YOUR ACCOUNT
+            </Link>
+            <Link href="/wishlist" onClick={() => setOpen(false)}>
+              WISHLIST
+            </Link>
+            <Link href="/cart" onClick={() => setOpen(false)}>
+              YOUR BAG ({lines.reduce((sum, line) => sum + line.quantity, 0)})
+            </Link>
+          </div>
+          <p>
+            BUILT FROM CULTURE.
+            <br />
+            WORN WITHOUT PERMISSION.
+          </p>
+        </Modal>
       )}
+      {bag && <CartDrawer onClose={() => setBag(false)} />}
     </>
   );
 }

@@ -1,168 +1,148 @@
 import Link from 'next/link';
-import { SoundArt } from '@/components/sound-art';
 import { Newsletter } from '@/components/newsletter';
 import { catalogState } from '@/lib/catalog';
 import { getContent } from '@/lib/content';
+import { getNewDrops } from '@/lib/new-drops';
+import { publishedStories } from '@/lib/editorial';
 import { ProductCard } from '@/components/products';
+import { CinematicHero } from '@/components/cinematic-hero';
+import {
+  CampaignSection,
+  CollectionPanels,
+  SectionTitle,
+  campaignAssets,
+} from '@/components/editorial';
+import { JournalPreview } from '@/components/journal';
+
 export default async function Home() {
   const [catalog, content] = await Promise.all([catalogState(), getContent()]);
-  const featured = catalog.products.filter((p) => p.featured);
+  const drops = getNewDrops(catalog.products);
+  const selection = (
+    drops.length ? drops : catalog.products.filter((product) => product.featured)
+  ).slice(0, 4);
+  const heroImage = content.heroImage || campaignAssets.hero;
+  const campaignImage = content.campaignImage || campaignAssets.campaign;
   return (
     <>
-      <section className="hero">
-        <div className="hero-copy">
-          <div className="eyebrow">
-            <span className="mini-star">✳</span> INDEPENDENT INDIAN STREETWEAR
-          </div>
-          <h1>
-            {content.heroTitle.split(' ').map((word, i) => (
-              <span key={i} className={i === 2 ? 'outline-text' : ''}>
-                {word}{' '}
-              </span>
-            ))}
-          </h1>
-          <p>{content.heroCopy}</p>
-          <div className="hero-actions">
-            <Link className="button acid" href="/new-drops">
-              EXPLORE THE DROP
-            </Link>
-            <Link className="text-link" href="/about">
-              DISCOVER THE CULTURE
-            </Link>
-          </div>
-          <div className="hero-footnote">
-            <span>
-              ROOTED IN SOUND.
-              <br />
-              WORN WITH INTENT.
-            </span>
-            <span className="sound-wave">▂▅▃▇▆▂▅▇▃▅▂▆▇▃▁</span>
-          </div>
+      <CinematicHero image={heroImage} title={content.heroTitle} copy={content.heroCopy} />
+      <section className="manifesto section" id="manifesto">
+        <div className="manifesto-meta">
+          <span className="eyebrow">THE SMOKE & STEREO MANIFESTO</span>
+          <span className="editorial-cross" aria-hidden="true">
+            +
+          </span>
         </div>
-        {content.heroImage ? (
-          <div
-            className="hero-image"
-            style={{ backgroundImage: `url(${JSON.stringify(content.heroImage)})` }}
-            role="img"
-            aria-label="Smoke and Stereo campaign"
-          />
-        ) : (
-          <SoundArt />
-        )}
-      </section>
-      <div className="ticker">
-        <div>
-          DESI HIP-HOP <b>✳</b> STREET CULTURE <b>✳</b> INDEPENDENT EXPRESSION <b>✳</b> SMOKE &
-          STEREO <b>✳</b> A DIFFERENT FREQUENCY <b>✳</b>
-        </div>
-      </div>
-      <section className="section drop-section">
-        <div className="section-heading">
+        <h2>
+          WE DIDN’T FOLLOW
+          <br />
+          THE CULTURE.
+          <br />
+          <span>WE GREW UP IN IT.</span>
+        </h2>
+        <div className="manifesto-bottom">
+          <span className="eyebrow">
+            DESI HIP-HOP.
+            <br />
+            INDIAN STREETS.
+            <br />
+            INDEPENDENT EXPRESSION.
+          </span>
           <div>
-            <span className="eyebrow muted">THE CURRENT ROTATION</span>
-            <h2>
-              FRESH FREQUENCIES<span className="acid-text">.</span>
-            </h2>
+            <p>
+              From the underground to the everyday. Inspired by the sound, the streets, and the
+              people shaping a new expression of Indian hip-hop.
+            </p>
+            <Link className="text-link" href="/about">
+              READ OUR STORY
+            </Link>
           </div>
-          <Link className="text-link" href="/shop">
-            SHOP ALL DROPS
-          </Link>
         </div>
-        {featured.length ? (
-          <div className="product-grid">
-            {featured.slice(0, 4).map((p) => (
-              <ProductCard key={p.sku} product={p} />
+      </section>
+      <section className="latest-editorial section">
+        <SectionTitle
+          label="NEW ENERGY. SAME ROOTS."
+          title={
+            <>
+              THE LATEST
+              <br />
+              <span className="outline-text">DROP.</span>
+            </>
+          }
+          href="/new-drops"
+          linkLabel="EXPLORE NEW DROPS"
+        />
+        {selection.length ? (
+          <div className="editorial-product-grid">
+            {selection.map((product) => (
+              <ProductCard key={product.sku} product={product} />
             ))}
           </div>
         ) : (
-          <div className="drop-empty">
-            <div className="drop-symbol">✳</div>
-            <div>
-              <span className="eyebrow">SOMETHING IS BUILDING.</span>
-              <h3>
-                THE NEXT DROP
-                <br />
-                IS ON ITS WAY.
-              </h3>
-              <p>
-                Good things take their own time.
-                <br />
-                Get on the list. Be first in the room.
-              </p>
-            </div>
+          <div className="empty-state">
+            <h3>
+              THE NEXT FREQUENCY
+              <br />
+              IS BUILDING.
+            </h3>
+            <p>Be first to hear when the next drop lands.</p>
             <a href="#frequency" className="button light">
               GET FIRST ACCESS
             </a>
           </div>
         )}
-      </section>
-      <section className="culture-section">
-        <div className="culture-label">
-          <span className="eyebrow">THIS IS SMOKE & STEREO</span>
-          <span className="culture-asterisk">✳</span>
-        </div>
-        <div>
-          <h2>
-            MORE THAN
-            <br />
-            WHAT YOU <em>WEAR.</em>
-          </h2>
-          <p>{content.about}</p>
-          <Link className="text-link" href="/about">
-            MEET THE CULTURE
+        <div className="section-bottom">
+          <span className="eyebrow muted">SILHOUETTES WITH SOMETHING TO SAY.</span>
+          <Link className="text-link" href="/shop">
+            VIEW ALL PRODUCTS
           </Link>
         </div>
-        <div className="culture-bottom">
-          <span>DHH × STREET CULTURE × CONTEMPORARY STREETWEAR</span>
-          <span>INDEPENDENT. ALWAYS.</span>
-        </div>
       </section>
-      <section
-        className="campaign section"
-        style={
-          content.campaignImage
-            ? {
-                backgroundImage: `linear-gradient(90deg, #0b0b0be6, #0b0b0b33), url(${JSON.stringify(content.campaignImage)})`,
-              }
-            : undefined
-        }
-      >
-        <div className="campaign-lines" aria-hidden="true">
-          S&S
-          <br />
-          S&S
-          <br />
-          S&S
-        </div>
-        <div className="campaign-copy">
-          <span className="eyebrow">FOR THE ONES ON THEIR OWN WAVELENGTH.</span>
-          <h2>
-            NOT MADE
-            <br />
-            TO FIT IN.
-          </h2>
-          <p>
-            No borrowed identity. No permission needed.
-            <br />
-            Just your sound. Your streets. Your expression.
-          </p>
-          <Link className="button light" href="/collections">
-            FIND YOUR FREQUENCY
-          </Link>
-        </div>
-        <span className="campaign-mark">
-          SMOKE & STEREO®
-          <br />
-          CULTURE IN EVERY THREAD.
-        </span>
+      <section className="collections-editorial section">
+        <SectionTitle
+          label="CHOOSE YOUR EXPRESSION"
+          title={
+            <>
+              NOT ONE
+              <br />
+              OF THE SAME.
+            </>
+          }
+          href="/collections"
+          linkLabel="ALL COLLECTIONS"
+        />
+        <CollectionPanels
+          limit={4}
+          products={catalog.products}
+          heroImage={heroImage}
+          campaignImage={campaignImage}
+        />
       </section>
+      <section className="journal-section section">
+        <SectionTitle
+          label="SOUND / ART / COMMUNITY"
+          title={
+            <>
+              FREQUENCY
+              <br />
+              <span className="outline-text">/ CULTURE</span>
+            </>
+          }
+          href="/culture"
+          linkLabel="ENTER THE JOURNAL"
+        />
+        <JournalPreview
+          stories={publishedStories(content.editorialStories).slice(0, 3)}
+          image={campaignImage}
+        />
+      </section>
+      <CampaignSection image={campaignImage} />
       <section id="frequency" className="newsletter section">
         <div>
-          <span className="eyebrow muted">DON’T MISS THE SIGNAL.</span>
+          <span className="eyebrow muted">LESS NOISE. MORE SIGNAL.</span>
           <h2>
             STAY IN THE
             <br />
-            <em>FREQUENCY.</em>
+            FREQUENCY.
           </h2>
           <p>
             First access to new drops, exclusive releases,

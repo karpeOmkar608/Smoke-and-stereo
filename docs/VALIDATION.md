@@ -1,5 +1,7 @@
 # Validation record
 
+Frontend redesign update (21 November 2026): monochrome editorial redesign implemented in the existing application. TypeScript and 67 tests pass. Desktop, 390px mobile and 768px tablet browser checks completed, including successful demo checkout after fixing Buy Now navigation and development-only loopback origin normalization. Existing catalogue/order/Supabase/checkout/newsletter/migration files matched their pre-redesign hashes. Details and campaign asset prompts are in REDESIGN.md; desktop screenshot is redesign-home-desktop.jpg. Live services remain subject to the existing setup requirements.
+
 New Drops page update: dedicated `/new-drops` route verified in the production build and desktop/mobile browser. The page shows four assigned demo releases, with a latest-release spotlight, search/filter/sort and product actions. Header navigation, the New Drops collection card, homepage CTA, footer and sitemap point to the dedicated route. TypeScript and all 47 tests pass; release-selection tests cover collection membership, missing dates and source-catalogue preservation. Mobile DOM width was within the viewport; the temporary viewport override was reset.
 
 Demo catalogue update: TypeScript and all 44 tests pass. Eight fictional products and 16 labelled local SVG illustrations support catalogue/cart testing; demo checkout validates without database, supplier, payment or email calls. Tests cover mode gating, real-checkout rejection of demo SKUs, supplier-call blocking, stock limits, invalid details, and Vercel production exclusion.
