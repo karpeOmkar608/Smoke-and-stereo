@@ -58,7 +58,7 @@ export function Checkout({
           </div>
         )}
         <form
-          className="form-grid"
+          className="form-grid checkout-form"
           onSubmit={async (e) => {
             e.preventDefault();
             if (busy || !enabled) return;
@@ -159,7 +159,7 @@ export function Checkout({
               />
             </label>
           ))}
-          <div className="span-two">
+          <div className="span-two checkout-payment">
             <h2>PAYMENT</h2>
             <p className="notice">
               {demo ? (
@@ -168,8 +168,9 @@ export function Checkout({
                 <>Cash on delivery{!enabled ? ' — available when orders open' : ''}</>
               )}
             </p>
-            <label>
-              <input type="radio" disabled /> Online payment — currently unavailable
+            <label className="checkout-payment-option">
+              <input type="radio" disabled />
+              <span>Online payment — currently unavailable</span>
             </label>
             <p className="small muted">
               {demo ? 'For real purchases, review our ' : 'By placing an order you agree to our '}
@@ -193,7 +194,7 @@ export function Checkout({
           </div>
         </form>
       </div>
-      <aside className="summary-box">
+      <aside className="summary-box checkout-summary">
         <h2>YOUR ROTATION</h2>
         {lines.map((l) => (
           <div className="summary-line" key={l.sku}>

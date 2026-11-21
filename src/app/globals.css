@@ -2961,6 +2961,69 @@ th {
     aspect-ratio: 3/4;
   }
 }
+/* Checkout needs room for both customer details and long bag item names. */
+.checkout-layout {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+}
+.checkout-layout > *,
+.checkout-form > *,
+.checkout-summary .summary-line > * {
+  min-width: 0;
+}
+.checkout-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.checkout-form input:not([type='radio']) {
+  width: 100%;
+  max-width: 100%;
+  min-height: 50px;
+  font-size: 16px;
+}
+.checkout-form .checkout-payment-option {
+  flex-direction: row;
+  align-items: flex-start;
+  line-height: 1.5;
+}
+.checkout-payment-option input[type='radio'] {
+  margin-top: 2px;
+}
+.checkout-payment .button {
+  white-space: normal;
+}
+.checkout-payment > .small {
+  margin: 16px 0;
+}
+.checkout-payment,
+.checkout-summary .summary-line > :first-child {
+  overflow-wrap: anywhere;
+}
+.checkout-summary .summary-line > span:last-child {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 1024px) {
+  .checkout-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 35px;
+  }
+  .checkout-summary {
+    position: static;
+  }
+}
+@media (max-width: 600px) {
+  .checkout-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .checkout-form > .span-two {
+    grid-column: 1 / -1;
+  }
+  .checkout-summary {
+    padding: 20px;
+  }
+  .checkout-summary .summary-line {
+    gap: 16px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *:before,
